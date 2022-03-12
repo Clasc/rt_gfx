@@ -8,16 +8,17 @@
             "args": [
                 "/Zi",
                 "/EHsc",
-                "/nologo",
                 "/Fe:",
                 "${cwd}\\out\\rotation.exe",
-                "${cwd}\\src\\main.cpp"
+                "${cwd}\\main.cpp"
             ],
             "problemMatcher": [
                 "$msCompile"
             ],
-            "group": "build",
-            "detail": "compiler: cl.exe"
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
         }
     ]
 }
