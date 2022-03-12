@@ -13,9 +13,6 @@
 				"${cwd}\\out\\rotation.exe",
 				"${cwd}\\src\\main.cpp"
 			],
-			"options": {
-				"cwd": "${fileDirname}"
-			},
 			"problemMatcher": [
 				"$msCompile"
 			],
