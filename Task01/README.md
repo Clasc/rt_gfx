@@ -7,5 +7,5 @@ Then simply run:
 The built files are written to the \out directory - there you can find the rotation.exe which is the compiled executable.
 
 ## VSCode
-If you open the project in a VSCode window via the developer console, you can also build the project with ctrl+b and launch it with ctrl+F5 (for no debugging)
+If you open the project in a VSCode window via the developer console, you can also build the project with ctrl+shift+b and launch it with ctrl+F5 (for no debugging)
 Additionally F5 launches the project with debugging enabled.

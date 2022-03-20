@@ -19,7 +19,7 @@ namespace task {
     }
 
     void print_seperator() {
-        std::cout << "__________________" << std::endl;
+        std::cout << "--------------------" << std::endl;
     }
 
     glm::mat4 create_rotation_mat(const glm::vec3 axis, const float angle) {
@@ -30,38 +30,46 @@ namespace task {
         return glm::rotate(model, angle, normalized);
     }
 
-    void print_vector(const char* name, glm::vec3 vec) {
+    void log_structure(const char* name, glm::vec3 vec) {
         std::cout << name << " :" << glm::to_string(vec) << std::endl;
     }
 
-    glm::vec3 rotate_around(const glm::vec3 source, const glm::vec3 axis, const float angle) {
-        // auto rotated_vec = glm::rotate(Model, angle, vec); // where x, y, z is axis of rotation (e.g. 0 1 0)
-        // see page 36
-        auto rotation_matrix = create_rotation_mat(axis, angle);
-        return rotation_matrix * glm::vec4(source, 0.0f);
+    void log_structure(const char* name, glm::mat4 mat) {
+        std::cout << name << " :" << glm::to_string(mat) << std::endl;
     }
 
-    void rotate_all(const glm::vec3 axis, const float angle) {
+    glm::vec3 rotate_around(const glm::vec3 source, glm::mat4 rotation_mat) {
+        return rotation_mat * glm::vec4(source, 0.0f);
+    }
+
+    void rotate_all(glm::mat4 rotation_mat) {
         auto vecs = create_vecs();
         for (const auto v : vecs) {
-            print_vector("origin", v);
-            auto result = rotate_around(v, axis, angle);
-            print_vector("result", result);
+            log_structure("origin", v);
+            auto result = rotate_around(v, rotation_mat);
+            log_structure("result", result);
             print_seperator();
         }
     }
 
     void print_angle_axis(const glm::vec3 axis, const float angle) {
         std::cout << "angle: " << angle << std::endl;
-        print_vector("axis", axis);
+        log_structure("axis", axis);
+    }
+
+    void log_section(const char* section) {
+        std::cout << std::endl << std::endl << "--- " << section << " --- " << std::endl << std::endl;
     }
 }
 
 int main(int argc, char const* argv[]) {
+    task::log_section("setup rotation matrix");
     auto const angle = glm::radians(90.0f);
     auto rotation_vector = glm::vec3(0.0f, 0.0f, 1.0f);
+    auto rotation_mat = task::create_rotation_mat(rotation_vector, angle);
     task::print_angle_axis(rotation_vector, angle);
-    std::cout << "--- rotate vectors --- " << std::endl << std::endl;
-    task::rotate_all(rotation_vector, angle);
+    task::log_structure("rotation mat", rotation_mat);
+    task::log_section("rotate vectors");
+    task::rotate_all(rotation_mat);
     return 0;
 }
