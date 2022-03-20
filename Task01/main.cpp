@@ -60,16 +60,20 @@ namespace task {
     void log_section(const char* section) {
         std::cout << std::endl << std::endl << "--- " << section << " --- " << std::endl << std::endl;
     }
+
+    void start_rotation_routine(float angle, glm::vec3 rotation_vector) {
+        task::log_section("setup rotation matrix");
+        auto rotation_mat = task::create_rotation_mat(rotation_vector, angle);
+        task::print_angle_axis(rotation_vector, angle);
+        task::log_structure("rotation mat", rotation_mat);
+        task::log_section("rotate vectors");
+        task::rotate_all(rotation_mat);
+    }
 }
 
 int main(int argc, char const* argv[]) {
-    task::log_section("setup rotation matrix");
-    auto const angle = glm::radians(90.0f);
-    auto rotation_vector = glm::vec3(0.0f, 0.0f, 1.0f);
-    auto rotation_mat = task::create_rotation_mat(rotation_vector, angle);
-    task::print_angle_axis(rotation_vector, angle);
-    task::log_structure("rotation mat", rotation_mat);
-    task::log_section("rotate vectors");
-    task::rotate_all(rotation_mat);
+
+    task::start_rotation_routine(glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    task::start_rotation_routine(glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     return 0;
 }
