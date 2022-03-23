@@ -12,6 +12,6 @@ Additionally F5 launches the project with debugging enabled.
 
 ## Remarks about the task
 I purposly chose easy vectors, so I can check the results for myself.
-The you can pass a angle axis pair to the "start_rotation_routine" function and it will rotate 3 arbitrary vectors around that angle axis pair.
+You can pass a angle axis pair to the "start_rotation_routine" function and it will rotate 3 arbitrary vectors around that angle axis pair.
 I ran this routine for 2 angle axis pairs for demonstration purposes.
 The screenshot of the result can be found in the root directory of this project, it is called results.png
