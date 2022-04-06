@@ -18,7 +18,7 @@ void foreach(std::function<void(glm::vec3, int i)> f, glm::vec3* v) {
     }
 }
 
-void arrayLog(const char* name, std::function<void()>f) {
+void log_ctx(const char* name, std::function<void()>f) {
     std::cout << name << ": [" << std::endl;
     f();
     std::cout << "]" << std::endl;
@@ -67,21 +67,32 @@ int main(int argc, char const* argv[]) {
 
 
     glm::mat4 mvp = projection * view * model;
+    log_ctx("Model Matrix", [&]() {
+        std::cout << glm::to_string(model) << std::endl;
+        });
 
-    std::cout << "model: " << glm::to_string(model) << std::endl;
-    std::cout << "view: " << glm::to_string(view) << std::endl;
-    std::cout << "projection: " << glm::to_string(projection) << std::endl;
-    std::cout << "mvp Matrix: " << glm::to_string(mvp) << std::endl;
+    log_ctx("View Matrix", [&]() {
+        std::cout << glm::to_string(view) << std::endl;
+        });
+
+    log_ctx("Projection Matrix", [&]() {
+        std::cout << glm::to_string(projection) << std::endl;
+        });
+
+    log_ctx("Mvp Matrix", [&]() {
+        std::cout << glm::to_string(mvp) << std::endl;
+        });
+
 
     glm::vec2 screenpos[8];
-    arrayLog("Cube vertices", [&]() {
+    log_ctx("Cube vertices", [&]() {
         foreach([](glm::vec3 v, int i) {
             std::cout << "Vertex " << i << ": " << glm::to_string(v) << std::endl;
             }, cube_vertices);
         }
     );
 
-    arrayLog("Screen positions", [&]() {
+    log_ctx("Screen positions", [&]() {
         foreach([&](glm::vec3 vertex, int i) {
             screenpos[i] = transformToPixelSpace(glm::vec2(mvp * glm::vec4(vertex, 1.0f)));
             std::cout << i << ":" << glm::to_string(glm::vec2(screenpos[i])) << std::endl;
