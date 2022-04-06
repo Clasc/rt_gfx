@@ -35,18 +35,14 @@ int main(int argc, char const* argv[]) {
         glm::vec3(-1.0f, 1.0f, -1.0f)
     };
 
-    arrayLog("Cube vertices", [&]() {
-        foreach([](glm::vec3 v, int i) {
-            std::cout << "Vertex " << i << glm::to_string(v) << std::endl;
-            }, cube_vertices);
-        }
-    );
 
     auto view = glm::lookAt(
-        glm::vec3(0, 0, 1),
-        glm::vec3(0, 1, 0),
+        glm::vec3(0, 0, -2),
+        glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0)
     );
+
+
 
     auto projection = glm::perspective(
         glm::radians(90.0f),
@@ -55,9 +51,22 @@ int main(int argc, char const* argv[]) {
         100.0f
     );
 
+
     glm::mat4 mvp = projection * view * model;
 
+    std::cout << "model: " << glm::to_string(model) << std::endl;
+    std::cout << "view: " << glm::to_string(view) << std::endl;
+    std::cout << "projection: " << glm::to_string(projection) << std::endl;
+    std::cout << "mvp Matrix: " << glm::to_string(mvp) << std::endl;
+
     glm::vec3 screenpos[8];
+    arrayLog("Cube vertices", [&]() {
+        foreach([](glm::vec3 v, int i) {
+            std::cout << "Vertex " << i << ": " << glm::to_string(v) << std::endl;
+            }, cube_vertices);
+        }
+    );
+
     arrayLog("Screen positions", [&]() {
         foreach([&](glm::vec3 vertex, int i) {
             screenpos[i] = glm::vec3(mvp * glm::vec4(vertex, 1.0f));
