@@ -9,17 +9,20 @@
 #include "./lib/glm/glm/gtx/hash.hpp" 
 #include <vector>
 
+void foreach(std::function<void(glm::vec3, int i)> f, glm::vec3* v) {
+    for (size_t i = 0; i < 8; i++) {
+        f(v[i], i);
+    }
+}
+
+void arrayLog(const char* name, std::function<void()>f) {
+    std::cout << name << ": [" << std::endl;
+    f();
+    std::cout << "]" << std::endl;
+}
+
 int main(int argc, char const* argv[]) {
-    std::cout << "Hello world!" << std::endl;
-
-    // create a cube and render it via a camera
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    glm::mat4 mvp = glm::mat4(1.0f);
-    glm::mat4 mv = glm::mat4(1.0f);
-    glm::mat4 normal = glm::mat4(1.0f);
-
+    auto model = glm::mat4(1.0f);
 
     glm::vec3 cube_vertices[] = {
         glm::vec3(1.0f, 1.0f, 1.0f),
@@ -32,44 +35,37 @@ int main(int argc, char const* argv[]) {
         glm::vec3(-1.0f, 1.0f, -1.0f)
     };
 
-    glm::vec3 cube_position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cube_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cube_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 cube_translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    arrayLog("Cube vertices", [&]() {
+        foreach([](glm::vec3 v, int i) {
+            std::cout << "Vertex " << i << glm::to_string(v) << std::endl;
+            }, cube_vertices);
+        }
+    );
 
-    // apply transformations to the cube
-    model = glm::translate(model, cube_position);
-    model = glm::rotate(model, glm::radians(cube_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(cube_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(cube_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::scale(model, cube_scale);
+    auto view = glm::lookAt(
+        glm::vec3(0, 0, 1),
+        glm::vec3(0, 1, 0),
+        glm::vec3(0, 1, 0)
+    );
 
+    auto projection = glm::perspective(
+        glm::radians(90.0f),
+        800.0f / 600.0f,
+        0.1f,
+        100.0f
+    );
 
+    glm::mat4 mvp = projection * view * model;
 
-    // create Camera 
-    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-    glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 10.0f);
+    glm::vec3 screenpos[8];
+    arrayLog("Screen positions", [&]() {
+        foreach([&](glm::vec3 vertex, int i) {
+            screenpos[i] = glm::vec3(mvp * glm::vec4(vertex, 1.0f));
+            std::cout << i << ":" << glm::to_string(glm::vec2(screenpos[i])) << std::endl;
+            }, cube_vertices);
+        }
+    );
 
-    // look at cube 
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
-    mvp = projection * view * model;
-    mv = view * model;
-    normal = glm::transpose(glm::inverse(mv));
-
-    // Compute the screen coordinates of the 8 vertices of the cube
-    glm::vec4 screen_coords[8];
-    for (int i = 0; i < 8; i++) {
-        screen_coords[i] = projection * view * model * glm::vec4(cube_vertices[i], 1.0f);
-        screen_coords[i] /= screen_coords[i].w;
-        screen_coords[i] = (screen_coords[i] + 1.0f) / 2.0f;
-    }
-
-    // Print the screen coordinates of the 8 vertices of the cube
-    for (int i = 0; i < 8; i++) {
-        std::cout << "Vertex " << i << ": " << screen_coords[i].x << ", " << screen_coords[i].y << std::endl;
-    }
 
     return 0;
 }
