@@ -26,8 +26,8 @@ void log_ctx(const char* name, std::function<void()>f) {
 
 glm::vec2 transformToPixelSpace(glm::vec2 ndc) {
     return glm::vec2(
-        (ndc.x + 1.0f) * SCREEN_WIDTH * 0.5f,
-        (1.0f - ndc.y) * SCREEN_HEIGHT * 0.5f
+        (ndc.x + 1.0f) * SCREEN_WIDTH / 2,
+        (ndc.y - 1.0f) * SCREEN_HEIGHT / 2
     );
 }
 
