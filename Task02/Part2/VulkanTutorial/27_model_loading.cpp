@@ -144,6 +144,21 @@ namespace task {
             });
     }
 
+    void printDevices(VkInstance instance) {
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+        VkPhysicalDeviceProperties properties;
+        logging_ctx([&]() {
+            std::cout << "Available devices: " << deviceCount << std::endl;
+            for (auto const& device : devices) {
+                vkGetPhysicalDeviceProperties(device, &properties);
+                std::cout << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
+            }
+            });
+    }
+
     void printExtensions() {
         uint32_t extension_count;
         vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
@@ -268,6 +283,7 @@ private:
 
         task::printInstanceLayers();
         task::printExtensions();
+        task::printDevices(instance);
 
         setupDebugMessenger();
         createSurface();

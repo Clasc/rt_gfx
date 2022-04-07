@@ -236,4 +236,7 @@ vkUnmapMemory(device, memory) returns void:
     memory:                         VkDeviceMemory = 5261630000000026
 
 
-# 
+## Available Devices
+Available devices: 2
+Name: NVIDIA GeForce GTX 1050 Type: 2
+Name: Intel(R) UHD Graphics 620 Type: 1
