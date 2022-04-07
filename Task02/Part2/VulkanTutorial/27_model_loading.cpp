@@ -130,20 +130,30 @@ namespace task {
         std::cout << "--------------------end--------------------" << std::endl << std::endl;
     }
 
-    void printInstanceLayers(std::vector<VkLayerProperties>  const& layers) {
+    void printInstanceLayers() {
+        uint32_t layerCount;
+        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+        std::vector<VkLayerProperties> availableLayers(layerCount);
+        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
         logging_ctx([&]() {
             std::cout << "Available layers:" << std::endl;
-            for (auto const& layer : layers) {
+            for (auto const& layer : availableLayers) {
                 std::cout << layer.layerName << std::endl;
             }
             });
     }
 
-    void printExtensions(std::vector<VkExtensionProperties> const& extensions) {
+    void printExtensions() {
+        uint32_t extension_count;
+        vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
+        std::vector<VkExtensionProperties> availableExtensions(extension_count);
+        vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, availableExtensions.data());
+
         logging_ctx([&]() {
             std::cout << "Available extensions:" << std::endl;
-            for (auto const& extension : extensions) {
-                std::cout << extension.Name << std::endl;
+            for (auto const& extension : availableExtensions) {
+                std::cout << extension.extensionName << std::endl;
             }
             });
     }
@@ -255,6 +265,10 @@ private:
 
     void initVulkan() {
         createInstance();
+
+        task::printInstanceLayers();
+        task::printExtensions();
+
         setupDebugMessenger();
         createSurface();
         pickPhysicalDevice();
@@ -1541,8 +1555,6 @@ private:
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
 
-        task::printExtensions(availableExtensions);
-
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
@@ -1606,9 +1618,6 @@ private:
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-
-        task::printInstanceLayers(availableLayers);
 
         for (const char* layerName : validationLayers) {
             bool layerFound = false;
