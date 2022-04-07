@@ -122,6 +122,40 @@ struct Vertex {
     }
 };
 
+
+namespace task {
+    void logging_ctx(std::function<void()> log) {
+        std::cout << "----------------logging_ctx----------------" << std::endl;
+        log();
+        std::cout << "--------------------end--------------------" << std::endl << std::endl;
+    }
+
+    void printInstanceLayers(std::vector<VkLayerProperties>  const& layers) {
+        logging_ctx([&]() {
+            std::cout << "Available layers:" << std::endl;
+            for (auto const& layer : layers) {
+                std::cout << layer.layerName << std::endl;
+            }
+            });
+    }
+
+    void printExtensions(std::vector<VkExtensionProperties> const& extensions) {
+        logging_ctx([&]() {
+            std::cout << "Available extensions:" << std::endl;
+            for (auto const& extension : extensions) {
+                std::cout << extension.Name << std::endl;
+            }
+            });
+    }
+
+    void enableMonitor() {
+        // Enable the instance layer VK_LAYER_LUNARG_monitor for vulkan debugging
+        std::vector<const char*> instanceLayers = {
+            "VK_LAYER_LUNARG_monitor"
+        };
+    }
+} // namespace task
+
 namespace std {
     template<> struct hash<Vertex> {
         size_t operator()(Vertex const& vertex) const {
@@ -1506,6 +1540,9 @@ private:
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+
+        task::printExtensions(availableExtensions);
+
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
@@ -1569,6 +1606,9 @@ private:
 
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+
+        task::printInstanceLayers(availableLayers);
 
         for (const char* layerName : validationLayers) {
             bool layerFound = false;
