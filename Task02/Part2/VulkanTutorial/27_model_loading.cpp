@@ -154,7 +154,7 @@ namespace task {
         logging_ctx([&]() {
             std::cout << "Available layers:" << std::endl;
             for (auto const& layer : availableLayers) {
-                std::cout << layer.layerName << std::endl;
+                std::cout << "\t" << layer.layerName << std::endl;
             }
             });
     }
@@ -188,7 +188,7 @@ namespace task {
             std::cout << "Available devices: " << deviceCount << std::endl;
             for (auto const& device : devices) {
                 auto properties = getDeviceProps(device);
-                std::cout << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
+                std::cout << "\t" << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
             }
             });
     }
@@ -202,16 +202,9 @@ namespace task {
         logging_ctx([&]() {
             std::cout << "Available extensions:" << std::endl;
             for (auto const& extension : availableExtensions) {
-                std::cout << extension.extensionName << std::endl;
+                std::cout << "\t" << extension.extensionName << std::endl;
             }
             });
-    }
-
-    void enableMonitor() {
-        // Enable the instance layer VK_LAYER_LUNARG_monitor for vulkan debugging
-        std::vector<const char*> instanceLayers = {
-            "VK_LAYER_LUNARG_monitor"
-        };
     }
 } // namespace task
 
