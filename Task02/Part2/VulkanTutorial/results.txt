@@ -1,0 +1,239 @@
+# Available instance layers:
+VK_LAYER_NV_optimus
+VK_LAYER_OBS_HOOK
+VK_LAYER_VALVE_steam_overlay
+VK_LAYER_VALVE_steam_fossilize
+VK_LAYER_EOS_Overlay
+VK_LAYER_EOS_Overlay
+VK_LAYER_LUNARG_api_dump
+VK_LAYER_LUNARG_device_simulation
+VK_LAYER_LUNARG_gfxreconstruct
+VK_LAYER_KHRONOS_synchronization2
+VK_LAYER_KHRONOS_validation
+VK_LAYER_LUNARG_monitor
+VK_LAYER_LUNARG_screenshot
+
+# Available extensions:
+VK_KHR_surface
+VK_KHR_win32_surface
+VK_KHR_external_memory_capabilities
+VK_KHR_external_semaphore_capabilities
+VK_KHR_external_fence_capabilities
+VK_KHR_get_physical_device_properties2
+VK_KHR_get_surface_capabilities2
+VK_KHR_device_group_creation
+VK_EXT_swapchain_colorspace
+VK_KHR_display
+VK_KHR_get_display_properties2
+VK_KHR_surface_protected_capabilities
+VK_EXT_debug_report
+VK_EXT_debug_utils
+VK_EXT_direct_mode_display
+VK_NV_external_memory_capabilities
+
+# Api Dump:
+
+Thread 0, Frame 1327:
+vkWaitForFences(device, fenceCount, pFences, waitAll, timeout) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712458
+        pFences[0]:                     const VkFence = 686F310000000034
+    waitAll:                        VkBool32 = 1
+    timeout:                        uint64_t = 18446744073709551615
+
+Thread 0, Frame 1327:
+vkAcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    swapchain:                      VkSwapchainKHR = 0983E60000000003
+    timeout:                        uint64_t = 18446744073709551615
+    semaphore:                      VkSemaphore = 042BF70000000032
+    fence:                          VkFence = 0000000000000000
+    pImageIndex:                    uint32_t* = 1
+
+Thread 0, Frame 1327:
+vkMapMemory(device, memory, offset, size, flags, ppData) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = AB46AD0000000028
+    offset:                         VkDeviceSize = 0
+    size:                           VkDeviceSize = 192
+    flags:                          VkMemoryMapFlags = 0
+    ppData:                         void** = 000002781DDFFC00
+
+Thread 0, Frame 1327:
+vkUnmapMemory(device, memory) returns void:
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = AB46AD0000000028
+
+Thread 0, Frame 1327:
+vkWaitForFences(device, fenceCount, pFences, waitAll, timeout) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712498
+        pFences[0]:                     const VkFence = 364D940000000031
+    waitAll:                        VkBool32 = 1
+    timeout:                        uint64_t = 18446744073709551615
+
+Thread 0, Frame 1327:
+vkResetFences(device, fenceCount, pFences) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712458
+        pFences[0]:                     const VkFence = 686F310000000034
+
+Thread 0, Frame 1327:
+vkQueueSubmit(queue, submitCount, pSubmits, fence) returns VkResult VK_SUCCESS (0):
+    queue:                          VkQueue = 00000278213DFAA0
+    submitCount:                    uint32_t = 1
+    pSubmits:                       const VkSubmitInfo* = 000000E75556F400
+        pSubmits[0]:                    const VkSubmitInfo = 000000E75556F400:
+            sType:                          VkStructureType = VK_STRUCTURE_TYPE_SUBMIT_INFO (4)
+            pNext:                          const void* = NULL
+            waitSemaphoreCount:             uint32_t = 1
+            pWaitSemaphores:                const VkSemaphore* = 000000E75556F3B0
+                pWaitSemaphores[0]:             const VkSemaphore = 042BF70000000032
+            pWaitDstStageMask:              const VkPipelineStageFlags* = 000000E75556F328
+                pWaitDstStageMask[0]:           const VkPipelineStageFlags = 1024 (VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+            commandBufferCount:             uint32_t = 1
+            pCommandBuffers:                const VkCommandBuffer* = 0000027821711ED8
+                pCommandBuffers[0]:             const VkCommandBuffer = 000002782171AB00
+            signalSemaphoreCount:           uint32_t = 1
+            pSignalSemaphores:              const VkSemaphore* = 000000E75556F330
+                pSignalSemaphores[0]:           const VkSemaphore = 14E1D60000000033
+    fence:                          VkFence = 686F310000000034
+
+Thread 0, Frame 1327:
+vkQueuePresentKHR(queue, pPresentInfo) returns VkResult VK_SUCCESS (0):
+    queue:                          VkQueue = 00000278213DFAA0
+    pPresentInfo:                   const VkPresentInfoKHR* = 000000E75556F450:
+        sType:                          VkStructureType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR (1000001001)
+        pNext:                          const void* = NULL
+        waitSemaphoreCount:             uint32_t = 1
+        pWaitSemaphores:                const VkSemaphore* = 000000E75556F330
+            pWaitSemaphores[0]:             const VkSemaphore = 14E1D60000000033
+        swapchainCount:                 uint32_t = 1
+        pSwapchains:                    const VkSwapchainKHR* = 000000E75556F3F8
+            pSwapchains[0]:                 const VkSwapchainKHR = 0983E60000000003
+        pImageIndices:                  const uint32_t* = 000000E75556F324
+            pImageIndices[0]:               const uint32_t = 1
+        pResults:                       VkResult* = NULL
+
+Thread 0, Frame 1328:
+vkWaitForFences(device, fenceCount, pFences, waitAll, timeout) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712450
+        pFences[0]:                     const VkFence = 364D940000000031
+    waitAll:                        VkBool32 = 1
+    timeout:                        uint64_t = 18446744073709551615
+
+Thread 0, Frame 1328:
+vkAcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    swapchain:                      VkSwapchainKHR = 0983E60000000003
+    timeout:                        uint64_t = 18446744073709551615
+    semaphore:                      VkSemaphore = DD684A000000002F
+    fence:                          VkFence = 0000000000000000
+    pImageIndex:                    uint32_t* = 2
+
+Thread 0, Frame 1328:
+vkMapMemory(device, memory, offset, size, flags, ppData) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = 89DAEF000000002A
+    offset:                         VkDeviceSize = 0
+    size:                           VkDeviceSize = 192
+    flags:                          VkMemoryMapFlags = 0
+    ppData:                         void** = 000002781DDFFA00
+
+Thread 0, Frame 1328:
+vkUnmapMemory(device, memory) returns void:
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = 89DAEF000000002A
+
+Thread 0, Frame 1328:
+vkWaitForFences(device, fenceCount, pFences, waitAll, timeout) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 00000278217124A0
+        pFences[0]:                     const VkFence = 686F310000000034
+    waitAll:                        VkBool32 = 1
+    timeout:                        uint64_t = 18446744073709551615
+
+Thread 0, Frame 1328:
+vkResetFences(device, fenceCount, pFences) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712450
+        pFences[0]:                     const VkFence = 364D940000000031
+
+Thread 0, Frame 1328:
+vkQueueSubmit(queue, submitCount, pSubmits, fence) returns VkResult VK_SUCCESS (0):
+    queue:                          VkQueue = 00000278213DFAA0
+    submitCount:                    uint32_t = 1
+    pSubmits:                       const VkSubmitInfo* = 000000E75556F400
+        pSubmits[0]:                    const VkSubmitInfo = 000000E75556F400:
+            sType:                          VkStructureType = VK_STRUCTURE_TYPE_SUBMIT_INFO (4)
+            pNext:                          const void* = NULL
+            waitSemaphoreCount:             uint32_t = 1
+            pWaitSemaphores:                const VkSemaphore* = 000000E75556F3B0
+                pWaitSemaphores[0]:             const VkSemaphore = DD684A000000002F
+            pWaitDstStageMask:              const VkPipelineStageFlags* = 000000E75556F328
+                pWaitDstStageMask[0]:           const VkPipelineStageFlags = 1024 (VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+            commandBufferCount:             uint32_t = 1
+            pCommandBuffers:                const VkCommandBuffer* = 0000027821711EE0
+                pCommandBuffers[0]:             const VkCommandBuffer = 00000278218AC040
+            signalSemaphoreCount:           uint32_t = 1
+            pSignalSemaphores:              const VkSemaphore* = 000000E75556F330
+                pSignalSemaphores[0]:           const VkSemaphore = 2597B50000000030
+    fence:                          VkFence = 364D940000000031
+
+Thread 0, Frame 1328:
+vkQueuePresentKHR(queue, pPresentInfo) returns VkResult VK_SUCCESS (0):
+    queue:                          VkQueue = 00000278213DFAA0
+    pPresentInfo:                   const VkPresentInfoKHR* = 000000E75556F450:
+        sType:                          VkStructureType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR (1000001001)
+        pNext:                          const void* = NULL
+        waitSemaphoreCount:             uint32_t = 1
+        pWaitSemaphores:                const VkSemaphore* = 000000E75556F330
+            pWaitSemaphores[0]:             const VkSemaphore = 2597B50000000030
+        swapchainCount:                 uint32_t = 1
+        pSwapchains:                    const VkSwapchainKHR* = 000000E75556F3F8
+            pSwapchains[0]:                 const VkSwapchainKHR = 0983E60000000003
+        pImageIndices:                  const uint32_t* = 000000E75556F324
+            pImageIndices[0]:               const uint32_t = 2
+        pResults:                       VkResult* = NULL
+
+Thread 0, Frame 1329:
+vkWaitForFences(device, fenceCount, pFences, waitAll, timeout) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    fenceCount:                     uint32_t = 1
+    pFences:                        const VkFence* = 0000027821712458
+        pFences[0]:                     const VkFence = 686F310000000034
+    waitAll:                        VkBool32 = 1
+    timeout:                        uint64_t = 18446744073709551615
+
+Thread 0, Frame 1329:
+vkAcquireNextImageKHR(device, swapchain, timeout, semaphore, fence, pImageIndex) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    swapchain:                      VkSwapchainKHR = 0983E60000000003
+    timeout:                        uint64_t = 18446744073709551615
+    semaphore:                      VkSemaphore = 042BF70000000032
+    fence:                          VkFence = 0000000000000000
+    pImageIndex:                    uint32_t* = 0
+
+Thread 0, Frame 1329:
+vkMapMemory(device, memory, offset, size, flags, ppData) returns VkResult VK_SUCCESS (0):
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = 5261630000000026
+    offset:                         VkDeviceSize = 0
+    size:                           VkDeviceSize = 192
+    flags:                          VkMemoryMapFlags = 0
+    ppData:                         void** = 000002781DDFFE00
+
+Thread 0, Frame 1329:
+vkUnmapMemory(device, memory) returns void:
+    device:                         VkDevice = 000002781CA434A0
+    memory:                         VkDeviceMemory = 5261630000000026
+
+
+# 
