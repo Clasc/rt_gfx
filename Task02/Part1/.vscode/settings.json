@@ -57,5 +57,6 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp"
-    }
+    },
+    "C_Cpp.default.configurationProvider": "go2sh.cmake-integration"
 }

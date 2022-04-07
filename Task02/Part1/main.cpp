@@ -84,7 +84,7 @@ int main(int argc, char const* argv[]) {
         });
 
 
-    glm::vec2 screenpos[8];
+
     log_ctx("Cube vertices", [&]() {
         foreach([](glm::vec3 v, int i) {
             std::cout << "Vertex " << i << ": " << glm::to_string(v) << std::endl;
@@ -92,14 +92,23 @@ int main(int argc, char const* argv[]) {
         }
     );
 
-    log_ctx("Screen positions", [&]() {
+    glm::vec3 ndc_pos[8];
+    log_ctx("NDC positions", [&]() {
         foreach([&](glm::vec3 vertex, int i) {
-            screenpos[i] = transformToPixelSpace(glm::vec2(mvp * glm::vec4(vertex, 1.0f)));
-            std::cout << i << ":" << glm::to_string(glm::vec2(screenpos[i])) << std::endl;
+            ndc_pos[i] = glm::vec3(mvp * glm::vec4(vertex, 1.0f));
+            std::cout << i << ":" << glm::to_string(ndc_pos[i]) << std::endl;
             }, cube_vertices);
         }
     );
 
+    glm::vec2 screenpos[8];
+    log_ctx("Screen positions", [&]() {
+        foreach([&](glm::vec3 vertex, int i) {
+            screenpos[i] = transformToPixelSpace(glm::vec2(vertex));
+            std::cout << i << ":" << glm::to_string(screenpos[i]) << std::endl;
+            }, ndc_pos);
+        }
+    );
 
     return 0;
 }
