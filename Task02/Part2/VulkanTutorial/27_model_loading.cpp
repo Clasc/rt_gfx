@@ -159,23 +159,38 @@ namespace task {
             });
     }
 
+    std::vector<VkPhysicalDevice> getPhysicalDevices(VkInstance instance, uint32_t* deviceCount) {
+        vkEnumeratePhysicalDevices(instance, deviceCount, nullptr);
+        std::vector<VkPhysicalDevice> devices(*deviceCount);
+        vkEnumeratePhysicalDevices(instance, deviceCount, devices.data());
+        return devices;
+    }
+
+    VkPhysicalDeviceProperties getDeviceProps(VkPhysicalDevice device) {
+        VkPhysicalDeviceProperties properties;
+        vkGetPhysicalDeviceProperties(device, &properties);
+        return properties;
+    }
+
+    void printExtensionsForDevices(VkInstance instance) {
+        uint32_t deviceCount = 0;
+        auto devices = getPhysicalDevices(instance, &deviceCount);
+        for (auto const& device : devices) {
+            auto properties = getDeviceProps(device);
+            printExtensionsForDevice(device, properties.deviceName);
+        }
+    }
+
     void printDevices(VkInstance instance) {
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-        std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-        VkPhysicalDeviceProperties properties;
+        auto devices = getPhysicalDevices(instance, &deviceCount);
         logging_ctx([&]() {
             std::cout << "Available devices: " << deviceCount << std::endl;
             for (auto const& device : devices) {
-                vkGetPhysicalDeviceProperties(device, &properties);
+                auto properties = getDeviceProps(device);
                 std::cout << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
             }
             });
-
-        for (auto const& device : devices) {
-            printExtensionsForDevice(device, properties.deviceName);
-        }
     }
 
     void printExtensions() {
@@ -303,6 +318,7 @@ private:
         task::printInstanceLayers();
         task::printExtensions();
         task::printDevices(instance);
+        task::printExtensionsForDevices(instance);
 
         setupDebugMessenger();
         createSurface();
