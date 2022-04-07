@@ -450,5 +450,8 @@ vkUnmapMemory(device, memory) returns void:
         VK_EXT_pipeline_creation_cache_control
         VK_KHR_pipeline_executable_properties
         VK_EXT_transform_feedback
-
-## Queue Families of Suitable device
+## Queue familes for suitable device
+Queue families for device: NVIDIA GeForce GTX 1050
+- Queue Flag: 15 Queue count: 16
+- Queue Flag: 12 Queue count: 2
+- Queue Flag: 14 Queue count: 8

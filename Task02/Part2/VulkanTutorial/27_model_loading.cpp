@@ -206,6 +206,20 @@ namespace task {
             }
             });
     }
+
+    void printQueueFamiliesFordevice(VkPhysicalDevice device) {
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+        auto props = getDeviceProps(device);
+        logging_ctx([&]() {
+            std::cout << "Queue families for device: " << props.deviceName << std::endl;
+            for (auto const& queueFamily : queueFamilies) {
+                std::cout << "\t" << "Queue Flag: " << queueFamily.queueFlags << " Queue count: " << queueFamily.queueCount << std::endl;
+            }
+            });
+    }
 } // namespace task
 
 namespace std {
@@ -316,6 +330,10 @@ private:
         setupDebugMessenger();
         createSurface();
         pickPhysicalDevice();
+
+        // Necessary here, because suitable device is chosen in pickPhysicalDevice()
+        task::printQueueFamiliesFordevice(physicalDevice);
+
         createLogicalDevice();
         createSwapChain();
         createImageViews();
