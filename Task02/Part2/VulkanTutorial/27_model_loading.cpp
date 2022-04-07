@@ -130,6 +130,21 @@ namespace task {
         std::cout << "--------------------end--------------------" << std::endl << std::endl;
     }
 
+    void printExtensionsForDevice(VkPhysicalDevice device, const char* deviceName) {
+        uint32_t extensionCount;
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+        logging_ctx([&]() {
+            std::cout << "Extensions for: " << deviceName << std::endl;
+            for (const auto& extension : availableExtensions) {
+                std::cout << "\t" << extension.extensionName << std::endl;
+            }
+            });
+
+    }
+
     void printInstanceLayers() {
         uint32_t layerCount;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -157,6 +172,10 @@ namespace task {
                 std::cout << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
             }
             });
+
+        for (auto const& device : devices) {
+            printExtensionsForDevice(device, properties.deviceName);
+        }
     }
 
     void printExtensions() {
