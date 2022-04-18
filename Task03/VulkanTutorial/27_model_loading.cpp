@@ -245,6 +245,7 @@ private:
         createCommandPool();
         createDepthResources();
         createFramebuffers();
+        initCommandBuffers();
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
@@ -254,7 +255,6 @@ private:
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
-        createCommandBuffers();
         createSyncObjects();
     }
 
@@ -353,10 +353,10 @@ private:
         createGraphicsPipeline();
         createDepthResources();
         createFramebuffers();
+        initCommandBuffers();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
-        createCommandBuffers();
     }
 
     void createInstance() {
@@ -1297,9 +1297,11 @@ private:
 
     }
 
-    void createCommandBuffers() {
+    void initCommandBuffers() {
         commandBuffers.resize(swapChainFramebuffers.size());
+    }
 
+    void recordCommandBuffers() {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = commandPool;
@@ -1374,7 +1376,10 @@ private:
 
         if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(device, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+            vkFreeCommandBuffers(device, commandPool, 1, &commandBuffers[imageIndex]);
         }
+
+        recordCommandBuffers();
 
         imagesInFlight[imageIndex] = inFlightFences[currentFrame];
 
