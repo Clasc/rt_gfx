@@ -130,96 +130,6 @@ namespace task {
         std::cout << "--------------------end--------------------" << std::endl << std::endl;
     }
 
-    void printExtensionsForDevice(VkPhysicalDevice device, const char* deviceName) {
-        uint32_t extensionCount;
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
-
-        logging_ctx([&]() {
-            std::cout << "Extensions for: " << deviceName << std::endl;
-            for (const auto& extension : availableExtensions) {
-                std::cout << "\t" << extension.extensionName << std::endl;
-            }
-            });
-
-    }
-
-    void printInstanceLayers() {
-        uint32_t layerCount;
-        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-        std::vector<VkLayerProperties> availableLayers(layerCount);
-        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-        logging_ctx([&]() {
-            std::cout << "Available layers:" << std::endl;
-            for (auto const& layer : availableLayers) {
-                std::cout << "\t" << layer.layerName << std::endl;
-            }
-            });
-    }
-
-    std::vector<VkPhysicalDevice> getPhysicalDevices(VkInstance instance, uint32_t* deviceCount) {
-        vkEnumeratePhysicalDevices(instance, deviceCount, nullptr);
-        std::vector<VkPhysicalDevice> devices(*deviceCount);
-        vkEnumeratePhysicalDevices(instance, deviceCount, devices.data());
-        return devices;
-    }
-
-    VkPhysicalDeviceProperties getDeviceProps(VkPhysicalDevice device) {
-        VkPhysicalDeviceProperties properties;
-        vkGetPhysicalDeviceProperties(device, &properties);
-        return properties;
-    }
-
-    void printExtensionsForDevices(VkInstance instance) {
-        uint32_t deviceCount = 0;
-        auto devices = getPhysicalDevices(instance, &deviceCount);
-        for (auto const& device : devices) {
-            auto properties = getDeviceProps(device);
-            printExtensionsForDevice(device, properties.deviceName);
-        }
-    }
-
-    void printDevices(VkInstance instance) {
-        uint32_t deviceCount = 0;
-        auto devices = getPhysicalDevices(instance, &deviceCount);
-        logging_ctx([&]() {
-            std::cout << "Available devices: " << deviceCount << std::endl;
-            for (auto const& device : devices) {
-                auto properties = getDeviceProps(device);
-                std::cout << "\t" << "Name: " << properties.deviceName << " Type: " << properties.deviceType << std::endl;
-            }
-            });
-    }
-
-    void printExtensions() {
-        uint32_t extension_count;
-        vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
-        std::vector<VkExtensionProperties> availableExtensions(extension_count);
-        vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, availableExtensions.data());
-
-        logging_ctx([&]() {
-            std::cout << "Available extensions:" << std::endl;
-            for (auto const& extension : availableExtensions) {
-                std::cout << "\t" << extension.extensionName << std::endl;
-            }
-            });
-    }
-
-    void printQueueFamiliesFordevice(VkPhysicalDevice device) {
-        uint32_t queueFamilyCount = 0;
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-        auto props = getDeviceProps(device);
-        logging_ctx([&]() {
-            std::cout << "Queue families for device: " << props.deviceName << std::endl;
-            for (auto const& queueFamily : queueFamilies) {
-                std::cout << "\t" << "Queue Flag: " << queueFamily.queueFlags << " Queue count: " << queueFamily.queueCount << std::endl;
-            }
-            });
-    }
 } // namespace task
 
 namespace std {
@@ -322,17 +232,9 @@ private:
     void initVulkan() {
         createInstance();
 
-        task::printInstanceLayers();
-        task::printExtensions();
-        task::printDevices(instance);
-        task::printExtensionsForDevices(instance);
-
         setupDebugMessenger();
         createSurface();
         pickPhysicalDevice();
-
-        // Necessary here, because suitable device is chosen in pickPhysicalDevice()
-        task::printQueueFamiliesFordevice(physicalDevice);
 
         createLogicalDevice();
         createSwapChain();
