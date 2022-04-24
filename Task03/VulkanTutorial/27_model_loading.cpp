@@ -124,12 +124,28 @@ struct Vertex {
 
 
 namespace task {
-    void logging_ctx(std::function<void()> log) {
-        std::cout << "----------------logging_ctx----------------" << std::endl;
+    void logging_ctx(const char* ctx_name, std::function<void()> log) {
+        std::cout << "----------------" << ctx_name << "----------------" << std::endl;
         log();
         std::cout << "--------------------end--------------------" << std::endl << std::endl;
     }
 
+    void printMemoryTypes(VkPhysicalDevice physicalDevice) {
+        VkPhysicalDeviceMemoryProperties memProperties;
+        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+        logging_ctx("mamoryTypes", [&]() {
+            for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+                std::cout << "memoryType[" << i << "] = " << memProperties.memoryTypes[i].propertyFlags << std::endl;
+            }
+
+            });
+
+        logging_ctx("memoryHeaps", [&]() {
+            for (uint32_t i = 0; i < memProperties.memoryHeapCount; i++) {
+                std::cout << "memoryHeap[" << i << "] = " << memProperties.memoryHeaps[i].flags << std::endl;
+            }
+            });
+    }
 } // namespace task
 
 namespace std {
@@ -256,6 +272,8 @@ private:
         createDescriptorPool();
         createDescriptorSets();
         createSyncObjects();
+
+        task::printMemoryTypes(physicalDevice);
     }
 
     void mainLoop() {
@@ -1252,6 +1270,8 @@ private:
 
         throw std::runtime_error("failed to find suitable memory type!");
     }
+
+
 
     void recordCommandBuffer(VkCommandBuffer& commandBuffer, const VkFramebuffer frameBuffer, const VkDescriptorSet descriptorSet) {
         VkCommandBufferBeginInfo beginInfo{};
