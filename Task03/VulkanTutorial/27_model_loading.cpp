@@ -1435,9 +1435,13 @@ private:
 
         if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
             vkWaitForFences(device, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+            // Check if the image in flight is handled, so we know that it has been rendered - free the command buffers
+            // do not free the command buffers if the image in flight is still in flight
             vkFreeCommandBuffers(device, commandPool, 1, &commandBuffers[imageIndex]);
         }
 
+        // record the command buffers
+        // we freed the command buffers earlier - so we need to record them here again
         recordCommandBuffers();
 
         imagesInFlight[imageIndex] = inFlightFences[currentFrame];
