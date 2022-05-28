@@ -31,8 +31,8 @@
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
-const std::string MODEL_PATH = "models/cube.obj";
-const std::string TEXTURE_PATH = "textures/bricksx64.png";
+const std::string MODEL_PATH = "models/viking_room.obj";
+const std::string TEXTURE_PATH = "textures/viking_room.png";
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -130,61 +130,6 @@ namespace task {
         std::cout << "--------------------end--------------------" << std::endl << std::endl;
     }
 
-
-    void appendEnum(int flag, int other, const char* otherName, std::string& str) {
-        if (flag & other) {
-            str += otherName;
-            str += " | ";
-        }
-    }
-
-    void cleanupEnumName(std::string& name) {
-        if (name.empty())
-            name = "Unknown Memory Property";
-        else
-            name.erase(name.end() - 3, name.end());
-    }
-
-    std::string getEnumName(VkMemoryPropertyFlags flag) {
-        std::string response = "";
-        appendEnum(flag, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, "VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, "VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, "VK_MEMORY_PROPERTY_HOST_COHERENT_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, "VK_MEMORY_PROPERTY_HOST_CACHED_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT, "VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_PROTECTED_BIT, "VK_MEMORY_PROPERTY_PROTECTED_BIT", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD, "VK_MEMORY_PROPERTY_DEVICE_COHERENT_BIT_AMD", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD, "VK_MEMORY_PROPERTY_DEVICE_UNCACHED_BIT_AMD", response);
-        appendEnum(flag, VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV, "VK_MEMORY_PROPERTY_RDMA_CAPABLE_BIT_NV", response);
-        cleanupEnumName(response);
-        return response;
-    }
-
-    std::string getEnumName(VkMemoryHeapFlagBits flag) {
-        std::string response = "";
-        appendEnum(flag, VK_MEMORY_HEAP_DEVICE_LOCAL_BIT, "VK_MEMORY_HEAP_DEVICE_LOCAL_BIT", response);
-        appendEnum(flag, VK_MEMORY_HEAP_MULTI_INSTANCE_BIT, "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT", response);
-        appendEnum(flag, VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR, "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT_KHR", response);
-        appendEnum(flag, VK_MEMORY_HEAP_MULTI_INSTANCE_BIT, "VK_MEMORY_HEAP_MULTI_INSTANCE_BIT", response);
-        cleanupEnumName(response);
-        return response;
-    }
-
-    void printMemoryTypes(VkPhysicalDevice physicalDevice) {
-        VkPhysicalDeviceMemoryProperties memProperties;
-        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-        logging_ctx("mamoryTypes", [&]() {
-            for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-                std::cout << "memoryType[" << i << "] = " << getEnumName(memProperties.memoryTypes[i].propertyFlags).c_str() << std::endl;
-            }
-            });
-
-        logging_ctx("memoryHeaps", [&]() {
-            for (uint32_t i = 0; i < memProperties.memoryHeapCount; i++) {
-                std::cout << "memoryHeap[" << i << "] = " << getEnumName(memProperties.memoryHeaps[i].flags).c_str() << std::endl;
-            }
-            });
-    }
 } // namespace task
 
 namespace std {
@@ -311,8 +256,6 @@ private:
         createDescriptorPool();
         createDescriptorSets();
         createSyncObjects();
-
-        task::printMemoryTypes(physicalDevice);
     }
 
     void mainLoop() {
