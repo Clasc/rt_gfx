@@ -1313,7 +1313,9 @@ private:
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(vbos[0].indices.size()), 1, 0, 0, 0);
+        for (auto& vbo : vbos) {
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(vbo.indices.size()), 1, 0, 0, 0);
+        }
 
         vkCmdEndRenderPass(commandBuffer);
 
