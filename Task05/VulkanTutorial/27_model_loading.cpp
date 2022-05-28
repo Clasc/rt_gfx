@@ -146,6 +146,11 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 proj;
 };
 
+struct VertexBufferObject {
+    std::vector<Vertex> vertices;
+    std::vector<uint32_t> indices;
+};
+
 class HelloTriangleApplication {
 public:
     void run() {
@@ -191,8 +196,8 @@ private:
     VkImageView textureImageView;
     VkSampler textureSampler;
 
-    std::vector<Vertex> vertices;
-    std::vector<uint32_t> indices;
+    std::vector<VertexBufferObject> vbos;
+
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
     VkBuffer indexBuffer;
@@ -250,8 +255,8 @@ private:
         createTextureImageView();
         createTextureSampler();
         loadModel();
-        createVertexBuffer();
-        createIndexBuffer();
+        createVertexBuffer(vbos[0]);
+        createIndexBuffer(vbos[0]);
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -448,10 +453,10 @@ private:
     }
 
     void createLogicalDevice() {
-        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+        QueueFamilyIndices qf_indices = findQueueFamilies(physicalDevice);
 
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-        std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+        std::set<uint32_t> uniqueQueueFamilies = { qf_indices.graphicsFamily.value(), qf_indices.presentFamily.value() };
 
         float queuePriority = 1.0f;
         for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -489,8 +494,8 @@ private:
             throw std::runtime_error("failed to create logical device!");
         }
 
-        vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
-        vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+        vkGetDeviceQueue(device, qf_indices.graphicsFamily.value(), 0, &graphicsQueue);
+        vkGetDeviceQueue(device, qf_indices.presentFamily.value(), 0, &presentQueue);
     }
 
     void createSwapChain() {
@@ -516,10 +521,10 @@ private:
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
-        uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+        QueueFamilyIndices qf_indices = findQueueFamilies(physicalDevice);
+        uint32_t queueFamilyIndices[] = { qf_indices.graphicsFamily.value(), qf_indices.presentFamily.value() };
 
-        if (indices.graphicsFamily != indices.presentFamily) {
+        if (qf_indices.graphicsFamily != qf_indices.presentFamily) {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
             createInfo.pQueueFamilyIndices = queueFamilyIndices;
@@ -1028,7 +1033,7 @@ private:
         }
 
         std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-
+        vbos = std::vector<VertexBufferObject>(shapes.size());
         for (const auto& shape : shapes) {
             for (const auto& index : shape.mesh.indices) {
                 Vertex vertex{};
@@ -1051,17 +1056,17 @@ private:
                 };
 
                 if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-                    vertices.push_back(vertex);
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vbos[0].vertices.size());
+                    vbos[0].vertices.push_back(vertex);
                 }
 
-                indices.push_back(uniqueVertices[vertex]);
+                vbos[0].indices.push_back(uniqueVertices[vertex]);
             }
         }
     }
 
-    void createVertexBuffer() {
-        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+    void createVertexBuffer(VertexBufferObject& vbo) {
+        VkDeviceSize bufferSize = sizeof(vbo.vertices[0]) * vbo.vertices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -1069,7 +1074,7 @@ private:
 
         void* data;
         vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, vertices.data(), (size_t)bufferSize);
+        memcpy(data, vbo.vertices.data(), (size_t)bufferSize);
         vkUnmapMemory(device, stagingBufferMemory);
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
@@ -1080,8 +1085,8 @@ private:
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void createIndexBuffer() {
-        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+    void createIndexBuffer(VertexBufferObject vbo) {
+        VkDeviceSize bufferSize = sizeof(vbo.indices[0]) * vbo.indices.size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -1089,7 +1094,7 @@ private:
 
         void* data;
         vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, indices.data(), (size_t)bufferSize);
+        memcpy(data, vbo.indices.data(), (size_t)bufferSize);
         vkUnmapMemory(device, stagingBufferMemory);
 
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
@@ -1293,7 +1298,7 @@ private:
 
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSet, 0, nullptr);
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(vbos[0].indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -1519,7 +1524,7 @@ private:
     }
 
     bool isDeviceSuitable(VkPhysicalDevice device) {
-        QueueFamilyIndices indices = findQueueFamilies(device);
+        QueueFamilyIndices qf_indices = findQueueFamilies(device);
 
         bool extensionsSupported = checkDeviceExtensionSupport(device);
 
@@ -1532,7 +1537,7 @@ private:
         VkPhysicalDeviceFeatures supportedFeatures;
         vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
 
-        return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
+        return qf_indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
     }
 
     bool checkDeviceExtensionSupport(VkPhysicalDevice device) {
@@ -1553,7 +1558,7 @@ private:
     }
 
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
-        QueueFamilyIndices indices;
+        QueueFamilyIndices qf_indices;
 
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -1564,24 +1569,24 @@ private:
         int i = 0;
         for (const auto& queueFamily : queueFamilies) {
             if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-                indices.graphicsFamily = i;
+                qf_indices.graphicsFamily = i;
             }
 
             VkBool32 presentSupport = false;
             vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 
             if (presentSupport) {
-                indices.presentFamily = i;
+                qf_indices.presentFamily = i;
             }
 
-            if (indices.isComplete()) {
+            if (qf_indices.isComplete()) {
                 break;
             }
 
             i++;
         }
 
-        return indices;
+        return qf_indices;
     }
 
     std::vector<const char*> getRequiredExtensions() {
