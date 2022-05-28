@@ -149,6 +149,11 @@ struct UniformBufferObject {
 struct VertexBufferObject {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
+
+    VertexBufferObject() {
+        vertices = {};
+        indices = {};
+    }
 };
 
 class HelloTriangleApplication {
@@ -255,8 +260,7 @@ private:
         createTextureImageView();
         createTextureSampler();
         loadModel();
-        createVertexBuffer(vbos[0]);
-        createIndexBuffer(vbos[0]);
+        createObjectBuffers();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -1033,8 +1037,10 @@ private:
         }
 
         std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-        vbos = std::vector<VertexBufferObject>(shapes.size());
+
+        vbos = std::vector<VertexBufferObject>();
         for (const auto& shape : shapes) {
+            VertexBufferObject vbo = VertexBufferObject();
             for (const auto& index : shape.mesh.indices) {
                 Vertex vertex{};
 
@@ -1056,12 +1062,14 @@ private:
                 };
 
                 if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(vbos[0].vertices.size());
-                    vbos[0].vertices.push_back(vertex);
+                    uniqueVertices[vertex] = static_cast<uint32_t>(vbo.vertices.size());
+                    vbo.vertices.push_back(vertex);
                 }
 
-                vbos[0].indices.push_back(uniqueVertices[vertex]);
+                vbo.indices.push_back(uniqueVertices[vertex]);
             }
+
+            vbos.push_back(vbo);
         }
     }
 
@@ -1083,6 +1091,13 @@ private:
 
         vkDestroyBuffer(device, stagingBuffer, nullptr);
         vkFreeMemory(device, stagingBufferMemory, nullptr);
+    }
+
+    void createObjectBuffers() {
+        for (auto& vbo : vbos) {
+            createVertexBuffer(vbo);
+            createIndexBuffer(vbo);
+        }
     }
 
     void createIndexBuffer(VertexBufferObject vbo) {
